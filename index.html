@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta name="google-site-verification" content="bfR2YDTiNsRUiqWkR6BGq-OYtmjJmArtnScVkBveDFo" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Workspace - Horario de Estudio</title>
+  <title>Santi Workspace - Organiza tu Día e IA</title>
   <style>
-    /* Estilos generales (Tema Oscuro) */
+    /* Estilos globales */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: #0f172a;
@@ -15,18 +16,20 @@
       min-height: 100vh;
     }
 
-    /* Barra lateral */
+    /* Barra lateral estilo App */
     .sidebar {
       width: 250px;
       background: #1e293b;
       padding: 24px 16px;
       border-right: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .sidebar h2 { color: #38bdf8; font-size: 20px; margin-bottom: 24px; }
+    .sidebar h2 { color: #38bdf8; font-size: 20px; margin-bottom: 20px; }
     .nav-btn {
-      display: block;
       width: 100%;
-      padding: 12px;
+      padding: 12px 16px;
       background: transparent;
       color: #94a3b8;
       border: none;
@@ -35,173 +38,102 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      margin-bottom: 8px;
+      transition: all 0.2s ease;
     }
-    .nav-btn.active, .nav-btn:hover {
+    .nav-btn:hover, .nav-btn.active {
       background: #38bdf8;
       color: #0f172a;
     }
 
-    /* Contenido Principal */
+    /* Contenedor principal */
     .content {
       flex: 1;
       padding: 32px;
       max-width: 900px;
     }
 
-    h1 { font-size: 26px; margin-bottom: 20px; color: #f8fafc; }
+    /* Manejo de secciones (pestañas) */
+    .section { display: none; }
+    .section.active { display: block; }
 
-    /* Formulario para agregar bloque */
+    /* Tarjetas y formularios */
     .card {
       background: #1e293b;
       padding: 20px;
       border-radius: 12px;
       border: 1px solid #334155;
-      margin-bottom: 24px;
+      margin-top: 16px;
     }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
-    input {
+    input, textarea, button {
       background: #334155;
       border: 1px solid #475569;
       color: white;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 8px;
       font-size: 14px;
-      outline: none;
     }
-    input:focus { border-color: #38bdf8; }
-    .btn-primary {
+    button.btn-primary {
       background: #38bdf8;
       color: #0f172a;
       font-weight: bold;
       border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
       cursor: pointer;
     }
-    .btn-primary:hover { background: #7dd3fc; }
-
-    /* Timeline de Horarios */
-    .timeline { display: flex; flex-direction: column; gap: 12px; }
-    .bloque-item {
-      display: flex;
-      align-items: center;
-      background: #1e293b;
-      border-left: 4px solid #38bdf8;
-      padding: 14px 18px;
-      border-radius: 8px;
-      justify-content: space-between;
-    }
-    .bloque-hora {
-      color: #38bdf8;
-      font-weight: bold;
-      font-size: 15px;
-      width: 140px;
-    }
-    .bloque-nombre { font-size: 16px; flex: 1; }
-    .btn-del {
-      background: transparent;
-      border: none;
-      color: #ef4444;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 4px 8px;
-    }
-    .btn-del:hover { color: #f87171; }
+    button.btn-primary:hover { background: #7dd3fc; }
   </style>
 </head>
 <body>
 
-  <!-- Barra de Navegación -->
+  <!-- Menu Lateral -->
   <div class="sidebar">
-    <h2>⚡ Workspace</h2>
-    <button class="nav-btn active">📅 Horario Diario</button>
-    <button class="nav-btn">📝 Apuntes</button>
-    <button class="nav-btn">🤖 Asistente IA</button>
+    <h2>⚡ Santi Workspace</h2>
+    <button class="nav-btn active" onclick="mostrarSeccion('horario', this)">📅 Horario Diario</button>
+    <button class="nav-btn" onclick="mostrarSeccion('apuntes', this)">📝 Bloc de Apuntes</button>
+    <button class="nav-btn" onclick="mostrarSeccion('ia', this)">🤖 Asistente IA</button>
   </div>
 
   <!-- Contenido -->
   <div class="content">
-    <h1>📅 Planificador de Horarios</h1>
 
-    <!-- Formulario -->
-    <div class="card">
-      <div class="form-grid">
-        <input type="text" id="actividad" placeholder="Ej. Estudiar Historia / Python">
-        <input type="time" id="horaInicio">
-        <input type="time" id="horaFin">
-        <button class="btn-primary" onclick="agregarBloque()">Agregar</button>
+    <!-- SECCIÓN 1: HORARIO -->
+    <div id="horario" class="section active">
+      <h1>📅 Planificador de Horarios</h1>
+      <div class="card">
+        <p>Aquí administras tus bloques de tiempo de estudio.</p>
       </div>
     </div>
 
-    <!-- Lista de Bloques del Día -->
-    <h2 style="font-size: 18px; margin-bottom: 14px; color: #94a3b8;">📋 Mi Rutina del Día</h2>
-    <div id="listaBloques" class="timeline"></div>
+    <!-- SECCIÓN 2: APUNTES -->
+    <div id="apuntes" class="section">
+      <h1>📝 Mis Apuntes de Estudio</h1>
+      <div class="card">
+        <textarea style="width: 100%; height: 150px;" placeholder="Escribe tus notas de clase o ideas aquí..."></textarea>
+        <button class="btn-primary" style="margin-top: 10px;">Guardar Nota</button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: IA -->
+    <div id="ia" class="section">
+      <h1>🤖 Asistente IA</h1>
+      <div class="card">
+        <p>Hazle preguntas a la Inteligencia Artificial sobre tus materias.</p>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // Memoria para los bloques en JavaScript
-    let bloques = [];
+    // JavaScript para cambiar de pestaña sin recargar la página
+    function mostrarSeccion(idSeccion, boton) {
+      // Ocultar todas las secciones
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      // Quitar clase activa a todos los botones
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-    function agregarBloque() {
-      const actividadInput = document.getElementById("actividad");
-      const inicioInput = document.getElementById("horaInicio");
-      const finInput = document.getElementById("horaFin");
-
-      const actividad = actividadInput.value.trim();
-      const inicio = inicioInput.value;
-      const fin = finInput.value;
-
-      if (actividad !== "" && inicio !== "" && fin !== "") {
-        bloques.push({ actividad, inicio, fin });
-
-        // Ordenar automáticamente por hora de inicio
-        bloques.sort((a, b) => a.inicio.localeCompare(b.inicio));
-
-        // Limpiar campos
-        actividadInput.value = "";
-        inicioInput.value = "";
-        finInput.value = "";
-
-        renderizarBloques();
-      } else {
-        alert("Por favor completa la actividad y los dos horarios.");
-      }
+      // Mostrar la sección seleccionada y activar el botón
+      document.getElementById(idSeccion).classList.add('active');
+      boton.classList.add('active');
     }
-
-    function borrarBloque(index) {
-      bloques.splice(index, 1);
-      renderizarBloques();
-    }
-
-    function renderizarBloques() {
-      const contenedor = document.getElementById("listaBloques");
-      contenedor.innerHTML = "";
-
-      if (bloques.length === 0) {
-        contenedor.innerHTML = `<p style="color: #64748b; font-style: italic;">No has agregado bloques para hoy.</p>`;
-        return;
-      }
-
-      bloques.forEach((bloque, index) => {
-        const item = document.createElement("div");
-        item.className = "bloque-item";
-        item.innerHTML = `
-          <div class="bloque-hora">⏱️ ${bloque.inicio} - ${bloque.fin}</div>
-          <div class="bloque-nombre">${bloque.actividad}</div>
-          <button class="btn-del" onclick="borrarBloque(${index})">❌</button>
-        `;
-        contenedor.appendChild(item);
-      });
-    }
-
-    // Dibujar lista vacía inicial
-    renderizarBloques();
   </script>
 </body>
 </html>
