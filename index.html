@@ -1,319 +1,271 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="purple">
+<html lang="es">
 <head>
     <meta name="google-site-verification" content="bfR2YDTinsRUiqWkR6BGq-OYtmjJmArtnScVkBveDFo" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santi Workspace - Organiza tu Día e IA</title>
-    
-    <!-- Fuentes de Google Fonts -->
+    <!-- Fuente moderna Inter de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Definición de Temas de Color --- */
-        [data-theme="purple"] {
-            --primary: #8b5cf6;
-            --primary-glow: rgba(139, 92, 246, 0.4);
-            --gradient: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
-        }
-        [data-theme="blue"] {
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
-            --gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-        }
-        [data-theme="emerald"] {
-            --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.4);
-            --gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
-        }
-        [data-theme="sunset"] {
-            --primary: #f97316;
-            --primary-glow: rgba(249, 115, 22, 0.4);
-            --gradient: linear-gradient(135deg, #fb923c 0%, #db2777 100%);
-        }
-
         :root {
-            --bg-dark: #080b11;
-            --bg-sidebar: #0f1523;
-            --card-bg: rgba(18, 26, 43, 0.6);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --radius-lg: 18px;
-            --radius-md: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-main: #0b0f17;
+            --bg-card: rgba(22, 30, 46, 0.7);
+            --bg-sidebar: #111827;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --radius: 12px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* --- Barra Lateral --- */
+        /* --- Barra Lateral Modernizada --- */
         .sidebar {
-            width: 270px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            padding: 28px 20px;
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 16px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            z-index: 10;
+            gap: 12px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 32px;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 0 8px;
         }
 
         .brand-logo {
-            width: 42px;
-            height: 42px;
-            background: var(--gradient);
-            border-radius: var(--radius-md);
+            width: 36px;
+            height: 36px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
-            box-shadow: 0 0 20px var(--primary-glow);
-            animation: pulse 3s infinite ease-in-out;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         .brand h2 {
-            font-size: 19px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            list-style: none;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }
 
         .nav-btn {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             background: transparent;
             border: 1px solid transparent;
-            border-radius: var(--radius-md);
-            color: var(--text-sub);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             text-align: left;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-            transform: translateX(4px);
-        }
-
-        .nav-btn.active {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            border-color: var(--border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Cambiador de Color */
-        .theme-picker {
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-        }
-
-        .theme-picker span {
-            font-size: 12px;
-            color: var(--text-sub);
-            font-weight: 600;
-            display: block;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .color-dots {
-            display: flex;
             gap: 10px;
         }
 
-        .dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
         }
 
-        .dot:hover { transform: scale(1.2); }
-        .dot.purple { background: #8b5cf6; }
-        .dot.blue { background: #3b82f6; }
-        .dot.emerald { background: #10b981; }
-        .dot.sunset { background: #f97316; }
+        .nav-btn.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
 
-        /* --- Área Principal --- */
+        /* --- Contenido Principal --- */
         .main-content {
             flex: 1;
             padding: 40px;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            animation: fadeIn 0.8s ease-out;
         }
 
         .header {
-            margin-bottom: 36px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-sub);
-            margin-bottom: 12px;
+            margin-bottom: 32px;
         }
 
         .header h1 {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: -1px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
             margin-bottom: 8px;
-            background: var(--gradient);
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- Rejilla de Tarjetas Interactivas --- */
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* --- Rejilla de Tarjetas Modernas --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
         }
 
         .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px var(--primary-glow);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
 
-        textarea, input[type="text"] {
+        /* Controles Interactivos */
+        input[type="text"], textarea {
             width: 100%;
-            padding: 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             color: white;
             font-size: 14px;
             outline: none;
-            transition: var(--transition);
+            transition: border-color 0.2s;
         }
 
-        textarea:focus, input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 10px var(--primary-glow);
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--accent-blue);
         }
 
-        .btn-glow {
+        .btn-action {
+            margin-top: 12px;
             width: 100%;
-            padding: 14px;
-            margin-top: 14px;
-            background: var(--gradient);
+            padding: 12px;
+            background: var(--accent-gradient);
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             color: white;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+            transition: opacity 0.2s;
         }
 
-        .btn-glow:hover {
+        .btn-action:hover {
             opacity: 0.9;
-            transform: scale(0.99);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .notes-area {
+            height: 120px;
+            resize: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
+    <!-- Sidebar Lateral -->
     <aside class="sidebar">
-        <div>
-            <div class="brand">
-                <div class="brand-logo">S</div>
-                <h2>Santi Workspace</h2>
-            </div>
-            
-            <ul class="menu-list">
-                <li><button class="nav-btn active">⚡ Panel Principal</button></li>
-                <li><button class="nav-btn">📝 Apuntes Inteligentes</button></li>
-                <li><button class="nav-btn">⏱️ Reloj Pomodoro</button></li>
-                <li><button class="nav-btn">🤖 Asistente de IA</button></li>
-            </ul>
+        <div class="brand">
+            <div class="brand-logo">S</div>
+            <h2>Santi Workspace</h2>
         </div>
+        <button class="nav-btn active">📊 Panel Principal</button>
+        <button class="nav-btn">📝 Apuntes Rápidos</button>
+        <button class="nav-btn">⏱️ Temporizador Pomodoro</button>
+        <button class="nav-btn">🤖 Asistente de IA</button>
+    </aside>
 
-        <!-- Selector de Color Personalizable -->
-        <div class="theme-picker">
-            <span>Color de Entorno</span>
-            <div class="color-dots">
-                <div class="dot purple" onclick="setTheme('purple')"></div>
-                <div class="dot blue" onclick="setTheme('blue')"></div>
+    <!-- Área de Trabajo Principal -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Bienvenido a tu Espacio de Estudio</h1>
+            <p>Gestiona tus tareas, toma notas e impulsa tu productividad desde un solo lugar.</p>
+        </header>
+
+        <section class="grid">
+            <!-- Tarjeta 1: Bloc de Notas -->
+            <div class="card">
+                <h3>📝 Apuntes Rápidos</h3>
+                <textarea class="notes-area" id="userNotes" placeholder="Escribe aquí tus ideas o recordatorios del día..."></textarea>
+                <button class="btn-action" onclick="saveNotes()">Guardar Apunte</button>
+            </div>
+
+            <!-- Tarjeta 2: Tareas Pendientes -->
+            <div class="card">
+                <h3>✅ Lista de Objetivos</h3>
+                <input type="text" id="taskInput" placeholder="Añadir nueva tarea...">
+                <button class="btn-action" style="background: rgba(255,255,255,0.08); box-shadow:none; border: 1px solid var(--border-color);" onclick="addTask()">+ Agregar Tarea</button>
+                <ul id="taskList" style="margin-top: 16px; list-style: none; display: flex; flex-direction: column; gap: 8px;"></ul>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Cargar notas guardadas previamente
+        document.getElementById('userNotes').value = localStorage.getItem('santi_notes') || '';
+
+        function saveNotes() {
+            const notes = document.getElementById('userNotes').value;
+            localStorage.setItem('santi_notes', notes);
+            alert('¡Apunte guardado correctamente en tu navegador!');
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            if (!input.value.trim()) return;
+            
+            const ul = document.getElementById('taskList');
+            const li = document.createElement('li');
+            li.style.cssText = "padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;";
+            li.innerHTML = `<span>${input.value}</span> <button onclick="this.parentElement.remove()" style="background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>`;
+            
+            ul.appendChild(li);
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
