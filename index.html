@@ -1,270 +1,1409 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="purple">
 <head>
+    <!-- Google Site Verification & Meta Tags -->
     <meta name="google-site-verification" content="bfR2YDTinsRUiqWkR6BGq-OYtmjJmArtnScVkBveDFo" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santi Workspace - Organiza tu Día e IA</title>
-    <!-- Fuente moderna Inter de Google Fonts -->
+    <title>Santi Workspace - Plataforma SaaS de Productividad e IA</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEMING (SaaS Dark Mode + Dynamic Accent Themes)
+           ========================================================================== */
         :root {
-            --bg-main: #0b0f17;
-            --bg-card: rgba(22, 30, 46, 0.7);
-            --bg-sidebar: #111827;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            --radius: 12px;
+            --bg-dark: #06090e;
+            --bg-sidebar: rgba(13, 18, 30, 0.75);
+            --card-bg: rgba(18, 25, 41, 0.55);
+            --card-bg-hover: rgba(26, 36, 58, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(255, 255, 255, 0.18);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Dynamic Theme Palette Override */
+        [data-theme="purple"] {
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --primary-glow: rgba(139, 92, 246, 0.35);
+            --gradient: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+        }
+        [data-theme="blue"] {
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --primary-glow: rgba(59, 130, 246, 0.35);
+            --gradient: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+        }
+        [data-theme="emerald"] {
+            --primary: #10b981;
+            --primary-light: #34d399;
+            --primary-glow: rgba(16, 185, 129, 0.35);
+            --gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        }
+        [data-theme="sunset"] {
+            --primary: #f97316;
+            --primary-light: #fb923c;
+            --primary-glow: rgba(249, 115, 22, 0.35);
+            --gradient: linear-gradient(135deg, #fb923c 0%, #db2777 100%);
+        }
+
+        /* ==========================================================================
+           2. BASE STYLES & LAYOUT
+           ========================================================================== */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            display: flex;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             min-height: 100vh;
+            display: flex;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* --- Barra Lateral Modernizada --- */
+        /* Interactive Particle Canvas & Background Glows */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: var(--gradient);
+            filter: blur(140px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .glow-1 { top: -100px; left: 10%; }
+        .glow-2 { bottom: -100px; right: 10%; }
+
+        /* Main Container */
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* ==========================================================================
+           3. SIDEBAR NAVIGATION
+           ========================================================================== */
         .sidebar {
-            width: 260px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            padding: 24px 16px;
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            padding: 28px 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            justify-content: space-between;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .sidebar.collapsed {
+            width: 88px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding: 0 8px;
+            gap: 14px;
+            margin-bottom: 32px;
+            overflow: hidden;
         }
 
         .brand-logo {
-            width: 36px;
-            height: 36px;
-            background: var(--accent-gradient);
-            border-radius: 10px;
+            min-width: 42px;
+            height: 42px;
+            background: var(--gradient);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-            color: white;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            font-weight: 800;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 0 25px var(--primary-glow);
+            animation: logoPulse 4s infinite ease-in-out;
         }
 
-        .brand h2 {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
+        .brand-text {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
         }
 
-        .nav-btn {
+        .sidebar.collapsed .brand-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .collapse-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            margin-left: auto;
+        }
+
+        .collapse-toggle:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: transparent;
             border: 1px solid transparent;
-            border-radius: var(--radius);
-            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: left;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .nav-btn:hover {
+        .nav-link i {
+            font-size: 18px;
+            min-width: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
             background: rgba(255, 255, 255, 0.04);
-            color: var(--text-primary);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.05);
+            transform: translateX(4px);
         }
 
-        .nav-btn.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
-            border-color: rgba(59, 130, 246, 0.2);
+        .sidebar.collapsed .nav-link:hover {
+            transform: translateX(0);
         }
 
-        /* --- Contenido Principal --- */
-        .main-content {
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-main);
+            border-color: var(--border-highlight);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-link.active i {
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        /* Color Theme Picker Widget */
+        .theme-widget {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .theme-widget-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            white-space: nowrap;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .color-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .color-dot.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .color-dot.purple { background: linear-gradient(135deg, #a855f7, #6366f1); }
+        .color-dot.blue { background: linear-gradient(135deg, #38bdf8, #2563eb); }
+        .color-dot.emerald { background: linear-gradient(135deg, #34d399, #059669); }
+        .color-dot.sunset { background: linear-gradient(135deg, #fb923c, #db2777); }
+
+        /* ==========================================================================
+           4. MAIN CONTENT AREA & SECTIONS
+           ========================================================================== */
+        .main-wrapper {
             flex: 1;
             padding: 40px;
-            max-width: 1100px;
+            max-width: 1250px;
             margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
         }
 
-        .header {
+        .section-view {
+            display: none;
+            animation: viewFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .section-view.active {
+            display: block;
+        }
+
+        /* View Header */
+        .view-header {
             margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            background: var(--accent-gradient);
+        .view-header-main .badge-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 12px;
+        }
+
+        .view-header-main h1 {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            margin-bottom: 6px;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .header p {
-            color: var(--text-secondary);
+        .view-header-main p {
+            color: var(--text-muted);
             font-size: 15px;
         }
 
-        /* --- Rejilla de Tarjetas Modernas --- */
-        .grid {
+        .header-clock {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Generic Glass Cards */
+        .card-glass {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-glass:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 30px var(--primary-glow);
+        }
+
+        /* ==========================================================================
+           5. SECTION 1: DASHBOARD / OVERVIEW
+           ========================================================================== */
+        .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            display: flex;
+            align-items: center;
             gap: 20px;
         }
 
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 24px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            background: var(--gradient);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        /* Controles Interactivos */
-        input[type="text"], textarea {
+        .metric-info h4 {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-info .val {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ==========================================================================
+           6. SECTION 2: BLOC DE NOTAS PRO
+           ========================================================================== */
+        .notes-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .notes-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-saas {
+            padding: 10px 18px;
+            background: var(--gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-saas:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-saas-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .btn-saas-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-highlight);
+        }
+
+        .notes-textarea {
             width: 100%;
-            padding: 12px 14px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            height: 380px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            color: var(--text-main);
+            font-size: 15px;
+            line-height: 1.6;
+            outline: none;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .notes-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* ==========================================================================
+           7. SECTION 3: POMODORO TIMER
+           ========================================================================== */
+        .pomodoro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .timer-circle-wrap {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin-bottom: 30px;
+        }
+
+        .timer-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .timer-bg-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 10;
+        }
+
+        .timer-progress-path {
+            fill: none;
+            stroke: url(#timerGradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 722;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-time {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .pomodoro-controls {
+            display: flex;
+            gap: 14px;
+        }
+
+        /* ==========================================================================
+           8. SECTION 4: TASK MANAGER (TO-DO LIST)
+           ========================================================================== */
+        .task-input-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .task-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
             color: white;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: var(--transition);
         }
 
-        input[type="text"]:focus, textarea:focus {
-            border-color: var(--accent-blue);
+        .task-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
-        .btn-action {
-            margin-top: 12px;
-            width: 100%;
-            padding: 12px;
-            background: var(--accent-gradient);
-            border: none;
-            border-radius: 8px;
-            color: white;
+        .task-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
             font-weight: 600;
-            font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
-            transition: opacity 0.2s;
+            transition: var(--transition);
         }
 
-        .btn-action:hover {
-            opacity: 0.9;
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border-color: var(--border-highlight);
         }
 
-        .notes-area {
-            height: 120px;
-            resize: none;
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .task-item:hover {
+            border-color: var(--border-highlight);
+            transform: translateX(4px);
+        }
+
+        .task-item.completed span {
+            text-decoration: line-through;
+            color: var(--text-dim);
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .task-item.completed .task-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-checkbox i {
+            font-size: 11px;
+            color: white;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .task-item.completed .task-checkbox i {
+            opacity: 1;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .btn-delete:hover {
+            color: #ef4444;
+        }
+
+        /* ==========================================================================
+           9. SECTION 5: AI ASSISTANT (CHAT SIMULATOR)
+           ========================================================================== */
+        .ai-chat-box {
+            height: 380px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-right: 8px;
+            margin-bottom: 20px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-msg.bot {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-msg.user {
+            background: var(--gradient);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .ai-prompts {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .prompt-chip {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .prompt-chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border-color: var(--border-highlight);
+        }
+
+        /* ==========================================================================
+           10. ANIMATIONS & RESPONSIVE
+           ========================================================================== */
+        @keyframes viewFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+            50% { box-shadow: 0 0 35px var(--primary-glow); }
+        }
+
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+            .sidebar.collapsed { width: 100%; }
+            .main-wrapper { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Lateral -->
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-logo">S</div>
-            <h2>Santi Workspace</h2>
-        </div>
-        <button class="nav-btn active">📊 Panel Principal</button>
-        <button class="nav-btn">📝 Apuntes Rápidos</button>
-        <button class="nav-btn">⏱️ Temporizador Pomodoro</button>
-        <button class="nav-btn">🤖 Asistente de IA</button>
-    </aside>
+    <!-- Canvas para Partículas Interactivas y Brillos -->
+    <canvas id="bgCanvas"></canvas>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
 
-    <!-- Área de Trabajo Principal -->
-    <main class="main-content">
-        <header class="header">
-            <h1>Bienvenido a tu Espacio de Estudio</h1>
-            <p>Gestiona tus tareas, toma notas e impulsa tu productividad desde un solo lugar.</p>
-        </header>
+    <div class="app-container">
+        <!-- BARRA LATERAL (SIDEBAR) -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-logo">S</div>
+                    <span class="brand-text">Santi Workspace</span>
+                    <button class="collapse-toggle" onclick="toggleSidebar()" title="Colapsar menú">
+                        <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+                    </button>
+                </div>
 
-        <section class="grid">
-            <!-- Tarjeta 1: Bloc de Notas -->
-            <div class="card">
-                <h3>📝 Apuntes Rápidos</h3>
-                <textarea class="notes-area" id="userNotes" placeholder="Escribe aquí tus ideas o recordatorios del día..."></textarea>
-                <button class="btn-action" onclick="saveNotes()">Guardar Apunte</button>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <button class="nav-link active" onclick="switchView('dashboard', this)">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span class="brand-text">Dashboard</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="switchView('notes', this)">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span class="brand-text">Bloc de Notas</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="switchView('pomodoro', this)">
+                            <i class="fa-solid fa-stopwatch"></i>
+                            <span class="brand-text">Reloj Pomodoro</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="switchView('tasks', this)">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span class="brand-text">Gestor de Tareas</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="switchView('ai', this)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span class="brand-text">Asistente IA</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
 
-            <!-- Tarjeta 2: Tareas Pendientes -->
-            <div class="card">
-                <h3>✅ Lista de Objetivos</h3>
-                <input type="text" id="taskInput" placeholder="Añadir nueva tarea...">
-                <button class="btn-action" style="background: rgba(255,255,255,0.08); box-shadow:none; border: 1px solid var(--border-color);" onclick="addTask()">+ Agregar Tarea</button>
-                <ul id="taskList" style="margin-top: 16px; list-style: none; display: flex; flex-direction: column; gap: 8px;"></ul>
+            <!-- Selector de Temas de Color -->
+            <div class="theme-widget">
+                <div class="theme-widget-title brand-text">Color de Entorno</div>
+                <div class="color-options">
+                    <div class="color-dot purple active" onclick="setTheme('purple', this)"></div>
+                    <div class="color-dot blue" onclick="setTheme('blue', this)"></div>
+                    <div class="color-dot emerald" onclick="setTheme('emerald', this)"></div>
+                    <div class="color-dot sunset" onclick="setTheme('sunset', this)"></div>
+                </div>
             </div>
-        </section>
-    </main>
+        </aside>
 
+        <!-- ÁREA PRINCIPAL DE CONTENIDO -->
+        <main class="main-wrapper">
+
+            <!-- SECCIÓN 1: DASHBOARD -->
+            <section id="view-dashboard" class="section-view active">
+                <div class="view-header">
+                    <div class="view-header-main">
+                        <div class="badge-tag"><i class="fa-solid fa-bolt"></i> Workspace Pro Edition</div>
+                        <h1 id="welcomeGreeting">¡Hola, Santi! 👋</h1>
+                        <p>Aquí tienes el resumen en tiempo real de tu productividad hoy.</p>
+                    </div>
+                    <div class="header-clock" id="liveClock">00:00:00 PM</div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="card-glass metric-card">
+                        <div class="metric-icon"><i class="fa-solid fa-check-double"></i></div>
+                        <div class="metric-info">
+                            <h4>Tareas Pendientes</h4>
+                            <div class="val" id="dashTaskCount">0</div>
+                        </div>
+                    </div>
+                    <div class="card-glass metric-card">
+                        <div class="metric-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="metric-info">
+                            <h4>Minutos Enfocados</h4>
+                            <div class="val" id="dashFocusMins">0</div>
+                        </div>
+                    </div>
+                    <div class="card-glass metric-card">
+                        <div class="metric-icon"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="metric-info">
+                            <h4>Palabras Escritas</h4>
+                            <div class="val" id="dashWordCount">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card-glass">
+                        <h3><i class="fa-solid fa-rocket" style="color:var(--primary); margin-right:8px;"></i> Acceso Rápido</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px; font-size:14px; line-height: 1.6;">
+                            Usa las pestañas de la izquierda para acceder al Bloc de Notas con autoguardado, el Temporizador Pomodoro con alerta de sonido, tu lista interactiva de tareas o el Asistente IA simulado.
+                        </p>
+                    </div>
+                    <div class="card-glass">
+                        <h3><i class="fa-solid fa-fire" style="color:var(--primary); margin-right:8px;"></i> Estado del Día</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px; font-size:14px;">
+                            ¡Todo configurado! Google Search Console ya tiene tu sitio indexado y tu espacio está listo para usar.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: BLOC DE NOTAS PRO -->
+            <section id="view-notes" class="section-view">
+                <div class="view-header">
+                    <div class="view-header-main">
+                        <div class="badge-tag"><i class="fa-solid fa-floppy-disk"></i> Autoguardado Local</div>
+                        <h1>Bloc de Notas Pro</h1>
+                        <p>Escribe tus apuntes de estudio o ideas con persistence en tiempo real.</p>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <div class="notes-toolbar">
+                        <div class="notes-stats">
+                            <span><i class="fa-solid fa-font"></i> Palabras: <strong id="noteWords">0</strong></span>
+                            <span><i class="fa-solid fa-text-height"></i> Caracteres: <strong id="noteChars">0</strong></span>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-saas btn-saas-secondary" onclick="copyNotes()"><i class="fa-solid fa-copy"></i> Copiar</button>
+                            <button class="btn-saas btn-saas-secondary" onclick="clearNotes()"><i class="fa-solid fa-trash-can"></i> Limpiar</button>
+                            <button class="btn-saas" onclick="manualSaveNotes()"><i class="fa-solid fa-save"></i> Guardar</button>
+                        </div>
+                    </div>
+                    <textarea class="notes-textarea" id="mainNotes" placeholder="Empieza a escribir tus notas importantes aquí..."></textarea>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: POMODORO TIMER -->
+            <section id="view-pomodoro" class="section-view">
+                <div class="view-header">
+                    <div class="view-header-main">
+                        <div class="badge-tag"><i class="fa-solid fa-clock"></i> Técnica de Enfoque</div>
+                        <h1>Temporizador Pomodoro</h1>
+                        <p>Aumenta tu rendimiento alternando periodos de estudio intenso y descanso.</p>
+                    </div>
+                </div>
+
+                <div class="card-glass pomodoro-container">
+                    <div class="timer-circle-wrap">
+                        <svg class="timer-svg" viewBox="0 0 250 250">
+                            <defs>
+                                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="var(--primary-light)" />
+                                    <stop offset="100%" stop-color="var(--primary)" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="timer-bg-path" cx="125" cy="125" r="115" />
+                            <circle class="timer-progress-path" id="timerProgress" cx="125" cy="125" r="115" />
+                        </svg>
+                        <div class="timer-display">
+                            <div class="timer-time" id="timerTime">25:00</div>
+                            <div class="timer-label" id="timerLabel">Enfoque</div>
+                        </div>
+                    </div>
+
+                    <div class="pomodoro-controls">
+                        <button class="btn-saas" id="timerStartBtn" onclick="toggleTimer()"><i class="fa-solid fa-play"></i> Iniciar</button>
+                        <button class="btn-saas btn-saas-secondary" onclick="resetTimer()"><i class="fa-solid fa-rotate-right"></i> Reiniciar</button>
+                        <button class="btn-saas btn-saas-secondary" onclick="setTimerMode(5)"><i class="fa-solid fa-mug-hot"></i> Descanso (5m)</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: GESTOR DE TAREAS -->
+            <section id="view-tasks" class="section-view">
+                <div class="view-header">
+                    <div class="view-header-main">
+                        <div class="badge-tag"><i class="fa-solid fa-square-check"></i> Organización Total</div>
+                        <h1>Gestor de Tareas</h1>
+                        <p>Define tus metas diarias y mantén el control de tus pendientes.</p>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <div class="task-input-box">
+                        <input type="text" class="task-input" id="taskInput" placeholder="Añadir una nueva tarea o meta..." onkeypress="handleTaskKey(event)">
+                        <button class="btn-saas" onclick="addNewTask()"><i class="fa-solid fa-plus"></i> Agregar</button>
+                    </div>
+
+                    <div class="task-filters">
+                        <button class="filter-btn active" onclick="filterTasks('all', this)">Todas</button>
+                        <button class="filter-btn" onclick="filterTasks('pending', this)">Pendientes</button>
+                        <button class="filter-btn" onclick="filterTasks('completed', this)">Completadas</button>
+                    </div>
+
+                    <ul class="task-list" id="taskListContainer">
+                        <!-- Las tareas se generan dinámicamente -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: ASISTENTE IA SIMULADO -->
+            <section id="view-ai" class="section-view">
+                <div class="view-header">
+                    <div class="view-header-main">
+                        <div class="badge-tag"><i class="fa-solid fa-robot"></i> Asistente Virtual</div>
+                        <h1>Santi AI Assistant</h1>
+                        <p>Tu copiloto inteligente para resolver dudas y optimizar tu estudio.</p>
+                    </div>
+                </div>
+
+                <div class="card-glass">
+                    <div class="ai-chat-box" id="aiChatBox">
+                        <div class="chat-msg bot">
+                            ¡Hola, Santi! Soy tu asistente de estudio. ¿En qué puedo ayudarte a organizar o resumir hoy?
+                        </div>
+                    </div>
+
+                    <div class="ai-prompts">
+                        <div class="prompt-chip" onclick="usePrompt('¿Puedes crearme un plan de estudio rápido?')">📋 Plan de estudio</div>
+                        <div class="prompt-chip" onclick="usePrompt('Dame 3 técnicas para memorizar mejor.')">🧠 Tips de memoria</div>
+                        <div class="prompt-chip" onclick="usePrompt('¿Cómo organizo mis descansos hoy?')">⏱️ Tips Pomodoro</div>
+                    </div>
+
+                    <div class="task-input-box" style="margin-bottom:0;">
+                        <input type="text" class="task-input" id="aiInput" placeholder="Escribe tu mensaje a la IA..." onkeypress="handleAiKey(event)">
+                        <button class="btn-saas" onclick="sendAiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JS INTERACTIVO COMPLETO -->
     <script>
-        // Cargar notas guardadas previamente
-        document.getElementById('userNotes').value = localStorage.getItem('santi_notes') || '';
+        /* ==========================================================================
+           1. PARTICLES CANVAS ENGINE
+           ========================================================================== */
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        function saveNotes() {
-            const notes = document.getElementById('userNotes').value;
-            localStorage.setItem('santi_notes', notes);
-            alert('¡Apunte guardado correctamente en tu navegador!');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        function addTask() {
+        function initCanvas() {
+            particles = [];
+            for (let i = 0; i < 45; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+
+        initCanvas();
+        animateCanvas();
+
+        /* ==========================================================================
+           2. NAVIGATION & THEME CONTROLLER
+           ========================================================================== */
+        function switchView(viewId, btnEl) {
+            document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('collapseIcon');
+            sidebar.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                icon.className = "fa-solid fa-angles-right";
+            } else {
+                icon.className = "fa-solid fa-angles-left";
+            }
+        }
+
+        function setTheme(themeName, el) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            if(el) el.classList.add('active');
+            localStorage.setItem('santi_theme_pro', themeName);
+        }
+
+        // Cargar tema guardado
+        const savedTheme = localStorage.getItem('santi_theme_pro') || 'purple';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        /* ==========================================================================
+           3. LIVE CLOCK & DASHBOARD METRICS
+           ========================================================================== */
+        function updateClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) {
+                clockEl.textContent = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+
+            const hrs = now.getHours();
+            const greeting = document.getElementById('welcomeGreeting');
+            if (greeting) {
+                if (hrs < 12) greeting.textContent = "¡Buenos días, Santi! ☀️";
+                else if (hrs < 19) greeting.textContent = "¡Buenas tardes, Santi! ⛅";
+                else greeting.textContent = "¡Buenas noches, Santi! 🌙";
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        /* ==========================================================================
+           4. BLOC DE NOTAS ENGINE
+           ========================================================================== */
+        const mainNotesArea = document.getElementById('mainNotes');
+        const noteWords = document.getElementById('noteWords');
+        const noteChars = document.getElementById('noteChars');
+
+        if(mainNotesArea) {
+            mainNotesArea.value = localStorage.getItem('santi_notes_pro') || '';
+            updateNotesStats();
+
+            mainNotesArea.addEventListener('input', () => {
+                localStorage.setItem('santi_notes_pro', mainNotesArea.value);
+                updateNotesStats();
+            });
+        }
+
+        function updateNotesStats() {
+            const text = mainNotesArea.value.trim();
+            const chars = mainNotesArea.value.length;
+            const words = text ? text.split(/\s+/).length : 0;
+            noteWords.textContent = words;
+            noteChars.textContent = chars;
+            
+            const dashWordCount = document.getElementById('dashWordCount');
+            if(dashWordCount) dashWordCount.textContent = words;
+        }
+
+        function manualSaveNotes() {
+            localStorage.setItem('santi_notes_pro', mainNotesArea.value);
+            alert("¡Notas guardadas correctamente en la memoria de tu navegador!");
+        }
+
+        function copyNotes() {
+            navigator.clipboard.writeText(mainNotesArea.value);
+            alert("¡Texto copiado al portapapeles!");
+        }
+
+        function clearNotes() {
+            if(confirm("¿Seguro que deseas borrar tus notas?")) {
+                mainNotesArea.value = '';
+                localStorage.setItem('santi_notes_pro', '');
+                updateNotesStats();
+            }
+        }
+
+        /* ==========================================================================
+           5. POMODORO TIMER ENGINE (Web Audio API)
+           ========================================================================== */
+        let timerInterval = null;
+        let timerSeconds = 25 * 60;
+        let totalSeconds = 25 * 60;
+        let isTimerRunning = false;
+        let totalFocusMins = parseInt(localStorage.getItem('santi_focus_mins') || '0');
+
+        const timerDisplay = document.getElementById('timerTime');
+        const timerProgress = document.getElementById('timerProgress');
+        const dashFocusMins = document.getElementById('dashFocusMins');
+        if(dashFocusMins) dashFocusMins.textContent = totalFocusMins;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
+            // Actualizar círculo SVG (radio 115, circunferencia ~722)
+            const circumference = 2 * Math.PI * 115;
+            const offset = circumference - (timerSeconds / totalSeconds) * circumference;
+            timerProgress.style.strokeDashoffset = offset;
+        }
+
+        function toggleTimer() {
+            const startBtn = document.getElementById('timerStartBtn');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                startBtn.innerHTML = `<i class="fa-solid fa-play"></i> Continuar`;
+            } else {
+                isTimerRunning = true;
+                startBtn.innerHTML = `<i class="fa-solid fa-pause"></i> Pausar`;
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        playAlarmSound();
+                        alert("¡Tiempo completado! Buen trabajo.");
+                        totalFocusMins += Math.round(totalSeconds / 60);
+                        localStorage.setItem('santi_focus_mins', totalFocusMins);
+                        if(dashFocusMins) dashFocusMins.textContent = totalFocusMins;
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerSeconds = totalSeconds;
+            document.getElementById('timerStartBtn').innerHTML = `<i class="fa-solid fa-play"></i> Iniciar`;
+            updateTimerDisplay();
+        }
+
+        function setTimerMode(mins) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            totalSeconds = mins * 60;
+            timerSeconds = totalSeconds;
+            document.getElementById('timerLabel').textContent = mins === 5 ? "Descanso" : "Enfoque";
+            document.getElementById('timerStartBtn').innerHTML = `<i class="fa-solid fa-play"></i> Iniciar`;
+            updateTimerDisplay();
+        }
+
+        function playAlarmSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 587.33; // Re5
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.6);
+        }
+
+        updateTimerDisplay();
+
+        /* ==========================================================================
+           6. GESTOR DE TAREAS ENGINE
+           ========================================================================== */
+        let tasks = JSON.parse(localStorage.getItem('santi_tasks_pro') || '[]');
+        let currentFilter = 'all';
+
+        function renderTasks() {
+            const container = document.getElementById('taskListContainer');
+            container.innerHTML = '';
+
+            const filtered = tasks.filter(t => {
+                if (currentFilter === 'pending') return !t.completed;
+                if (currentFilter === 'completed') return t.completed;
+                return true;
+            });
+
+            filtered.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <div class="task-left">
+                        <div class="task-checkbox" onclick="toggleTask(${task.id})">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span>${task.text}</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteTask(${task.id})"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(li);
+            });
+
+            const pendingCount = tasks.filter(t => !t.completed).length;
+            const dashTaskCount = document.getElementById('dashTaskCount');
+            if(dashTaskCount) dashTaskCount.textContent = pendingCount;
+
+            localStorage.setItem('santi_tasks_pro', JSON.stringify(tasks));
+        }
+
+        function addNewTask() {
             const input = document.getElementById('taskInput');
             if (!input.value.trim()) return;
-            
-            const ul = document.getElementById('taskList');
-            const li = document.createElement('li');
-            li.style.cssText = "padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 14px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;";
-            li.innerHTML = `<span>${input.value}</span> <button onclick="this.parentElement.remove()" style="background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>`;
-            
-            ul.appendChild(li);
+
+            tasks.push({
+                id: Date.now(),
+                text: input.value.trim(),
+                completed: false
+            });
             input.value = '';
+            renderTasks();
+        }
+
+        function handleTaskKey(e) {
+            if (e.key === 'Enter') addNewTask();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        function filterTasks(filter, el) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if(el) el.classList.add('active');
+            renderTasks();
+        }
+
+        renderTasks();
+
+        /* ==========================================================================
+           7. AI ASSISTANT SIMULATOR
+           ========================================================================== */
+        function sendAiMessage() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            appendChatMsg(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                let botResponse = "Entendido. Para ayudarte con tu estudio, te recomiendo dividir el tema en bloques de 25 minutos y resumir los puntos clave en tu Bloc de Notas.";
+                
+                if (text.toLowerCase().includes('plan')) {
+                    botResponse = "📌 **Plan sugerido hoy:**\n1. Enfoque 25m: Lectura principal.\n2. Descanso 5m.\n3. Enfoque 25m: Resolver ejercicios o tomar apuntes.";
+                } else if (text.toLowerCase().includes('memoria') || text.toLowerCase().includes('tip')) {
+                    botResponse = "💡 **3 Consejos de Memorización:**\n1. Explicar el tema con tus palabras (Técnica Feynman).\n2. Repetición espaciada.\n3. Crear mapas conceptuales visuales.";
+                }
+                
+                appendChatMsg(botResponse, 'bot');
+            }, 700);
+        }
+
+        function appendChatMsg(text, sender) {
+            const box = document.getElementById('aiChatBox');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${sender}`;
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function usePrompt(promptText) {
+            document.getElementById('aiInput').value = promptText;
+            sendAiMessage();
+        }
+
+        function handleAiKey(e) {
+            if (e.key === 'Enter') sendAiMessage();
         }
     </script>
 </body>
