@@ -803,6 +803,24 @@
             .sidebar.collapsed { width: 100%; }
             .main-wrapper { padding: 20px; }
         }
+        .sidebar.collapsed .brand {
+            justify-content: center;
+            gap: 0;
+        }
+
+        .sidebar.collapsed .brand-logo {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar.collapsed .brand-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar.collapsed .collapse-toggle {
+            display: none;
+        }
+    
     </style>
 </head>
 <body>
@@ -816,13 +834,13 @@
         <!-- BARRA LATERAL (SIDEBAR) -->
         <aside class="sidebar" id="sidebar">
             <div>
-                <div class="brand">
-                    <div class="brand-logo">S</div>
-                    <span class="brand-text">Santi Workspace</span>
-                    <button class="collapse-toggle" onclick="toggleSidebar()" title="Colapsar menú">
-                        <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
-                    </button>
-                </div>
+    <div class="brand">
+        <div class="brand-logo" onclick="toggleSidebar()" title="Abrir / Cerrar menú" style="cursor: pointer;">S</div>
+        <span class="brand-text">Santi Workspace</span>
+        <button class="collapse-toggle" onclick="toggleSidebar()" title="Colapsar menú">
+             <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+        </button>
+    </div>
 
                 <ul class="nav-menu">
                     <li class="nav-item">
