@@ -803,24 +803,35 @@
             .sidebar.collapsed { width: 100%; }
             .main-wrapper { padding: 20px; }
         }
-        .sidebar.collapsed .brand {
-            justify-content: center;
-            gap: 0;
-        }
+        .sidebar.collapsed {
+    width: 88px;
+    overflow: visible !important;
+}
 
-        .sidebar.collapsed .brand-logo {
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
+.sidebar.collapsed .brand {
+    justify-content: center;
+    gap: 0;
+    position: relative;
+}
 
-        .sidebar.collapsed .brand-logo:hover {
-            transform: scale(1.1);
-        }
+.sidebar.collapsed .brand-logo {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    position: relative;
+    z-index: 100;
+}
 
-        .sidebar.collapsed .collapse-toggle {
-            display: none;
-        }
-    
+.sidebar.collapsed .brand-logo:hover {
+    transform: scale(1.15);
+}
+
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .nav-text,
+.sidebar.collapsed .theme-widget-title,
+.sidebar.collapsed .color-options,
+.sidebar.collapsed .collapse-toggle {
+    display: none;
+}
     </style>
 </head>
 <body>
@@ -834,13 +845,13 @@
         <!-- BARRA LATERAL (SIDEBAR) -->
         <aside class="sidebar" id="sidebar">
             <div>
-    <div class="brand">
-        <div class="brand-logo" onclick="toggleSidebar()" title="Abrir / Cerrar menú" style="cursor: pointer;">S</div>
-        <span class="brand-text">Santi Workspace</span>
-        <button class="collapse-toggle" onclick="toggleSidebar()" title="Colapsar menú">
-             <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
-        </button>
-    </div>
+                <div class="brand">
+                    <div class="brand-logo" onclick="toggleSidebar()" title="Abrir / Cerrar menú" style="cursor: pointer;">S</div>
+                    <span class="brand-text">Santi Workspace</span>
+                    <button class="collapse-toggle" onclick="toggleSidebar()" title="Colapsar menú">
+                        <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+                    </button>
+                </div>
 
                 <ul class="nav-menu">
                     <li class="nav-item">
