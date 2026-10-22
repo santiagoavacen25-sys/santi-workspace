@@ -797,13 +797,26 @@
             50% { box-shadow: 0 0 35px var(--primary-glow); }
         }
 
-        @media (max-width: 768px) {
-            .app-container { flex-direction: column; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-            .sidebar.collapsed { width: 100%; }
-            .main-wrapper { padding: 20px; }
-        }
-        .sidebar.collapsed {
+       @media (max-width: 768px) {
+    .app-container { 
+        flex-direction: column; 
+    }
+    .sidebar { 
+        width: 100%; 
+        height: auto;
+        border-right: none; 
+        border-bottom: 1px solid var(--border); 
+    }
+    .sidebar.collapsed { 
+        width: 100%; 
+        height: 70px; 
+        overflow: hidden;
+    }
+    .main-wrapper { 
+        padding: 15px; 
+    }
+}
+    .sidebar.collapsed {
     width: 88px;
     overflow: visible !important;
 }
@@ -832,6 +845,7 @@
 .sidebar.collapsed .collapse-toggle {
     display: none;
 }
+    
     </style>
 </head>
 <body>
@@ -843,7 +857,7 @@
 
     <div class="app-container">
         <!-- BARRA LATERAL (SIDEBAR) -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar collapsed" id="sidebar">
             <div>
                 <div class="brand">
                     <div class="brand-logo" onclick="toggleSidebar()" title="Abrir / Cerrar menú" style="cursor: pointer;">S</div>
