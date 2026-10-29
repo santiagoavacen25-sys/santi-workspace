@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santi Workspace - Plataforma SaaS de Productividad e IA</title>
-    
+    <meta name="description" content="Plataforma SaaS de productividad personal con temporizador Pomodoro Pro, bloc de notas y gestor de tareas.">
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1272,6 +1272,61 @@
             const circumference = 2 * Math.PI * 115;
             const offset = circumference - (timerSeconds / totalSeconds) * circumference;
             timerProgress.style.strokeDashoffset = offset;
+        
+          // --- Motor de Sonidos Ambientales (Web Audio API) ---
+let audioCtx = null;
+let noiseNode = null;
+let noiseGain = null;
+
+function startAmbientSound(type) {
+    stopAmbientSound();
+    if (type === 'none') return;
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Crear buffer de ruido (5 segundos)
+    const bufferSize = audioCtx.sampleRate * 5;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        let white = Math.random() * 2 - 1;
+        if (type === 'white') {
+            output[i] = white * 0.1;
+        } else if (type === 'pink') {
+            output[i] = (white * 0.15); 
+        } else if (type === 'rain') {
+            output[i] = (white * 0.08) * Math.sin(i / 1000);
+        }
+    }
+
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+    
+function stopAmbientSound() {
+    if (noiseNode) {
+        try { noiseNode.stop(); } catch(e) {}
+        noiseNode.disconnect();
+        noiseNode = null;
+    }
+    if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+    }
+}
+
+// Escuchar cambios en el selector de sonidos
+document.addEventListener('DOMContentLoaded', () => {
+    const soundSelect = document.getElementById('ambient-sound-select');
+    if (soundSelect) {
+        soundSelect.addEventListener('change', (e) => {
+            startAmbientSound(e.target.value);
+        });
+    }
+});
+        
+        
         }
 
         function toggleTimer() {
